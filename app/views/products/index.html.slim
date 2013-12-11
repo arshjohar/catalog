@@ -1,0 +1,21 @@
+= form_tag products_path, method: 'get' do
+  = text_field_tag :gtin, params[:gtin], {id: 'input-gtin', placeholder: 'Enter GTIN'}
+  = submit_tag 'Search', {id: 'submit-gtin', class: 'btn btn-default'}
+
+- if @product
+  .product-details
+    h3.product-name = @product['name']
+
+    span.product-gtin-label GTIN:
+    span.product-gtin-val = @product['gtin']
+
+    table.table#seller-table
+      tr
+        th Seller Name
+        th Base Price
+        th Total Price
+      - @product[:selling_prices].each do |seller|
+        tr
+          td.seller-name = seller['seller_name']
+          td.base-price = seller['base_price']
+          td.total-price = seller['total_price']

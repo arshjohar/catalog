@@ -1,0 +1,22 @@
+#Not providing any username and password for simplicity.
+development:
+  sessions:
+    default:
+      database: catalog_development
+      hosts:
+        - localhost:27017
+  options:
+    raise_not_found_error: false
+
+test:
+  sessions:
+    default:
+      database: catalog_test
+      hosts:
+        - localhost:27017
+      options:
+        read: primary
+        max_retries: 1
+        retry_interval: 0
+  options:
+      raise_not_found_error: false
