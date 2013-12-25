@@ -16,6 +16,9 @@ end
 
 group :test do
   gem 'cucumber-rails'
+  gem 'capybara-webkit'
+  gem 'site_prism'
+  gem 'selenium-webdriver'
   gem 'database_cleaner'
   gem 'pry'
   gem 'pry-debugger'
