@@ -10,3 +10,11 @@ end
 
 Cucumber::Rails::Database.javascript_strategy = :truncation
 
+if ENV['headless'] =~ /false/i
+  Capybara.default_driver = Capybara.javascript_driver = :selenium
+else
+  Capybara.default_driver = Capybara.javascript_driver = :webkit
+end
+
+WebMock.allow_net_connect!
+
