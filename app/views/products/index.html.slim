@@ -1,6 +1,3 @@
-- if flash.now[:error]
-  = content_tag(:div, flash.now[:error], class: 'alert alert-danger')
-
 = form_tag products_path, method: 'get' do
   = text_field_tag :gtin, params[:gtin], {id: 'input-gtin', placeholder: 'Enter GTIN'}
   = submit_tag 'Search', {id: 'submit-gtin', class: 'btn btn-default'}

@@ -18,7 +18,7 @@ describe ProductsController do
 
       get :index, {gtin: gtin}
 
-      expect(flash[:error]).to eq("Product with GTIN #{gtin} does not exist.")
+      expect(flash[:danger]).to eq("Product with GTIN #{gtin} does not exist.")
     end
   end
 
