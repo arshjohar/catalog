@@ -2,23 +2,26 @@ require 'spec_helper'
 
 describe ProductsController do
 
-  context '#show' do
+  context '#index' do
     it 'should give a product with the given gtin' do
-      product = FactoryGirl.create(:product)
-      allow(Product).to receive(:find_with_gtin).with(product.gtin).and_return(product)
+      valid_gtin = '1234'
+      product = double(Product)
+      allow(Product).to receive(:find_with_gtin).with(valid_gtin).and_return(product)
 
-      get :index, {gtin: product.gtin}
+      get :index, {gtin: valid_gtin}
 
       assigns(:product).should == product
+      expect(response).to render_template('index')
     end
 
     it 'should show an error message if a product with the given gtin is not found' do
-      gtin = '123'
-      allow(Product).to receive(:find_with_gtin).with(gtin).and_return(nil)
+      invalid_gtin = 'invalid'
+      allow(Product).to receive(:find_with_gtin).with(invalid_gtin).and_return(nil)
 
-      get :index, {gtin: gtin}
+      get :index, {gtin: invalid_gtin}
 
-      expect(flash[:danger]).to eq("Product with GTIN #{gtin} does not exist.")
+      expect(flash[:danger]).to eq("Product with GTIN #{invalid_gtin} does not exist.")
+      expect(response).to render_template('index')
     end
   end
 

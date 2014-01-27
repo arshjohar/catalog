@@ -17,32 +17,25 @@ describe Product do
 
   #I prefer using method names in context as its easier to find specs related to a method
   context '#find_with_gtin' do
-    before :each do
-      @product = FactoryGirl.create(:product)
-    end
-
-    it 'should return a product with the given gtin if it already exists in the database' do
-      expect(Product).to receive(:find_by).with(gtin: @product.gtin).and_return(@product)
+    it 'should return a product with the given gtin and not scrape if it already exists in the database' do
+      persisted_product = FactoryGirl.create(:product)
       expect_any_instance_of(GoogleShoppingSearcher).not_to receive(:get_product_details)
-      expect(Product).not_to receive(:save)
 
-      expect(Product.find_with_gtin(@product.gtin)).to eq(@product)
+      expect(Product.find_with_gtin(persisted_product.gtin)).to eq(persisted_product)
     end
 
-    it 'should scrape Google Shopping to search the product if it does not exist in the database' do
-      expect(Product).to receive(:find_by).with(gtin: @product.gtin).and_return(nil)
-      expect(Product).to receive(:create).and_return(true)
-      allow_any_instance_of(GoogleShoppingSearcher).to receive(:get_product_details).with(@product.gtin).and_return(@product)
+    it 'should scrape Google Shopping to search the product and persist it if it does not exist in the database' do
+      new_product = FactoryGirl.build(:product)
+      expect_any_instance_of(GoogleShoppingSearcher).to receive(:get_product_details).with(new_product.gtin).and_return(new_product)
+      expect(Product).to receive(:create).with(new_product)
 
-      expect(Product.find_with_gtin(@product.gtin)).to eq(@product)
+      expect(Product.find_with_gtin(new_product.gtin)).to eq(new_product)
     end
 
-    it 'should return nil if the product does not exist either in the database or google shopping' do
-      expect(Product).to receive(:find_by).and_return(nil)
-      allow_any_instance_of(GoogleShoppingSearcher).to receive(:get_product_details).with(@product.gtin).and_return(nil)
-      expect(Product).not_to receive(:save)
+    it 'should return nil if the product does exists neither in the database nor google shopping' do
+      allow_any_instance_of(GoogleShoppingSearcher).to receive(:get_product_details).and_return(nil)
 
-      expect(Product.find_with_gtin(@product.gtin)).to eq(nil)
+      expect(Product.find_with_gtin('invalid')).to eq(nil)
     end
   end
 end
