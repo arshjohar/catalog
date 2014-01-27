@@ -17,7 +17,7 @@ class Product
     product_details = Product.find_by(gtin: gtin)
     return product_details if product_details
     product_details = PRODUCT_SOURCES[:google_shopping].get_product_details(gtin)
-    Product.create(product_details)
+    return Product.create(product_details) if product_details
     product_details
   end
 end
